@@ -10,6 +10,7 @@ A serverless AWS Lambda function that uses OpenAI's GPT-4o-mini model to automat
 - ⚡ **Serverless**: Deployed on AWS Lambda for automatic scaling
 - 🌐 **CORS Enabled**: Ready for web application integration
 - 🔒 **Environment Variable Security**: API keys stored securely as environment variables
+- 📈 **Highly Scalable**: Easy to add new functionality without affecting existing code
 
 ## Architecture
 
@@ -19,6 +20,45 @@ The function uses a service dispatcher pattern that routes requests based on the
 service_dispatcher = {
     "HELP_AND_SUPPORT": handle_help_and_support_ticket_category,
     # Add more services here as needed
+
+## Scalability & Extensibility
+
+This code is designed to be highly scalable. To add new functionality:
+
+1. **Create a new handler function** following the same pattern:
+   ```python
+   def handle_new_service(data: Dict[str, Any]) -> Dict[str, Any]:
+       try:
+           # Your new service logic here
+           return response_wrapper(200, "Success", True, result_data)
+       except Exception as e:
+           return response_wrapper(500, f"Error: {str(e)}", False, {})
+   ```
+
+2. **Add it to the service dispatcher**:
+   ```python
+   service_dispatcher = {
+       "HELP_AND_SUPPORT": handle_help_and_support_ticket_category,
+       "NEW_SERVICE": handle_new_service,  # Add your new service here
+   }
+   ```
+
+3. **Call it with the new type**:
+   ```json
+   {
+     "type": "NEW_SERVICE",
+     "data": {
+       "your": "parameters"
+     }
+   }
+   ```
+
+**Benefits of this approach:**
+- ✅ **Zero impact** on existing functionality
+- ✅ **Easy to maintain** - each service is isolated
+- ✅ **Simple to test** - test each service independently
+- ✅ **Clear separation** of concerns
+- ✅ **Future-proof** - add unlimited new services
 }
 ```
 
